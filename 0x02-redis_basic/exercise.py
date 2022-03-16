@@ -27,8 +27,7 @@ class Cache:
         return key
 
     def get(self, key: str,
-            fn: Optional[Callable] = None)
-            -> Union[str, bytes, int, float]:
+            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
         """Convert the data back to the desired format
             Args:
                 key: generated key
