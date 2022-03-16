@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Redis"""
 
-from typing import Union
+from typing import Union, Callable, Optional
 import redis
 import uuid
 
