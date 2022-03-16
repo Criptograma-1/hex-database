@@ -47,13 +47,13 @@ class Cache:
 
         return data.decode("utf-8")
 
-     def get_int(self, key: str) -> int:
-         """Convert data to int"""
-         data = self._redis.get(key)
+    def get_int(self, key: str) -> int:
+        """Convert data to int"""
+        data = self._redis.get(key)
 
-         try:
-             data = int(value.decode("utf-8"))
-         except Exception:
-             data = 0
+        try:
+            data = int(value.decode("utf-8"))
+        except Exception:
+            data = 0
          
-         return data
+        return data
