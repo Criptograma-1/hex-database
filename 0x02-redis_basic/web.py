@@ -4,7 +4,7 @@
 import redis
 import requests
 
-redis = redis.Redis()
+re = redis.Redis()
 count = 0
 
 
@@ -13,10 +13,10 @@ def get_page(url: str) -> str:
     Method to track how many times a particular URL was accessed
     and cache the result with an expiration time of 10 seconds.
     """
-    redis.set(f"cached:{url}", count)
+    re.set(f"cached:{url}", count)
     response = requests.get(url)
-    redis.incr(f"count:{url}")
-    redis.setex(f"cached:{url}", 10, redis.get(f"cached:{url}"))
+    re.incr(f"count:{url}")
+    re.setex(f"cached:{url}", 10, re.get(f"cached:{url}"))
 
     return response.text
 
