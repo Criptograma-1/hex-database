@@ -23,7 +23,7 @@ def count_requests(method: Callable) -> Callable:
             return cached_html.decode('utf-8')
 
         html = method(url)
-        rd.setex(f"cached:{url}", 10, html)
+        rd.setex(f"cached:{url}", 10)
         return html
 
     return wrapper
