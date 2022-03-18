@@ -55,6 +55,7 @@ def replay(method: Callable):
 
 
 class Cache:
+    """Class cache"""
 
     def __init__(self):
         """Constructor"""
