@@ -47,7 +47,7 @@ class Cache:
 
 
     @call_history
-    @count_callis
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """store the input data in Redis using the random key
             Args:
