@@ -17,7 +17,7 @@ def count_requests(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         key = "cached:" + url
-        data = store.get(key)
+        data = re.get(key)
         if data:
             return data.decode("utf-8")
 
