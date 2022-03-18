@@ -16,7 +16,7 @@ def get_page(url: str) -> str:
     redis.set(f"cached:{url}", count)
     response = requests.get(url)
     redis.incr(f"count:{url}")
-    redis.setex(f"cached:{url}", 10, r.get(f"cached:{url}"))
+    redis.setex(f"cached:{url}", 10, redis.get(f"cached:{url}"))
 
     return response.text
 
