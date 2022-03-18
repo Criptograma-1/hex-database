@@ -15,10 +15,20 @@ def count_requests(method: Callable) -> Callable:
         has been made
     """
     @wraps(method)
-    def wrapper(*args, **kwds):
-        re.incr("count:{}".format(args[0]), 1)
-        return method(*args, **kwds)
-    return wrapper
+    def wrapper(url):
+        key = "cached:" + url
+        data = store.get(key)
+        if data:
+            return data.decode("utf-8")
+
+        key = "count:" + url
+        html = method(url)
+
+        re.incr(count_key)
+        re.set(key, html)
+        re.expire(key, 10)
+        return html
+    return 
 
 
 @count_requests
@@ -26,8 +36,5 @@ def get_page(url: str) -> str:
     """ requests module to obtain the HTML
         content of a particular URL and returns it.
     """
-   if not re.exists(url):
-        response = requests.get(url)
-        re.setex(url, timedelta(seconds=10), response.content)
-        return response.content
-    return re.get(url)
+    response = requests.get(url)
+    return response.text
