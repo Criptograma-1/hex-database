@@ -3,6 +3,7 @@
 
 import redis
 import requests
+from datetime import timedelta
 
 re = redis.Redis()
 count = 0
@@ -16,7 +17,7 @@ def get_page(url: str) -> str:
     re.set(f"cached:{url}", count)
     response = requests.get(url)
     re.incr(f"count:{url}")
-    re.setex(f"cached:{url}", 10, re.get(f"cached:{url}"))
+    re.setex(f"cached:{url}", timedelta(seconds=10), re.get(f"cached:{url}"))
 
     return response.text
 
