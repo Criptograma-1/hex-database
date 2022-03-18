@@ -3,10 +3,10 @@
 
 import redis
 import requests
-from datetime import timedelta
+from typing import Callable
+from functools import wraps
 
 re = redis.Redis()
-count = 0
 
 
 def count_requests(method: Callable) -> Callable:
