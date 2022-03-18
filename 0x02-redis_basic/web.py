@@ -28,5 +28,3 @@ def get_page(url: str) -> str:
         cache.setex(url, timedelta(seconds=10), res.content)
         return res.content
     return cache.get(url)
-
-get_page('http://google.com')
