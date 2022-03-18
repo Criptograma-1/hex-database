@@ -9,18 +9,30 @@ re = redis.Redis()
 count = 0
 
 
+def count_requests(method: Callable) -> Callable:
+    """ Counting with decorators how many times a request
+        has been made
+    """
+
+    @wraps(method)
+    def wrapper(url):
+        """ Wrapper for decorator functionality """
+        rd.incr(f"count:{url}")
+        cached_html = rd.get(f"cached:{url}")
+        if cached_html:
+            return cached_html.decode('utf-8')
+
+        html = method(url)
+        rd.setex(f"cached:{url}", 10, html)
+        return html
+
+    return wrapper
+
+
+@count_requests
 def get_page(url: str) -> str:
+    """ requests module to obtain the HTML
+        content of a particular URL and returns it.
     """
-    Method to track how many times a particular URL was accessed
-    and cache the result with an expiration time of 10 seconds.
-    """
-    re.set(f"cached:{url}", count)
-    response = requests.get(url)
-    re.incr(f"count:{url}")
-    re.setex(f"cached:{url}", timedelta(seconds=10), re.get(f"cached:{url}"))
-
-    return response.text
-
-
-if __name__ == "__main__":
-    get_page('http://slowwly.robertomurray.co.uk')
+    req = requests.get(url)
+    return req.text
