@@ -30,4 +30,4 @@ def get_page(url: str) -> str:
     return cache.get(url)
 
 
-get_page()
+get_page('http://google.com')
