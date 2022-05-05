@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-create a web cach
+create a web cache
 """
 import redis
 import requests
@@ -12,7 +12,7 @@ def get_page(url: str) -> str:
     """ get a page and cache value"""
     rc.set(f"cached:{url}", count)
     resp = requests.get(url)
-    rc.incr(f"count:{url}")
+    redis.incr(f"count:{url}")
     rc.setex(f"cached:{url}", 10, rc.get(f"cached:{url}"))
     return resp.text
 
