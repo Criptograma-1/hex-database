@@ -1,35 +1,21 @@
 #!/usr/bin/env python3
-""" Tracker callls """
-
+"""
+create a web cach
+"""
 import redis
 import requests
-from typing import Callable
-from functools import wraps
-
-r = redis.Redis()
+rc = redis.Redis()
+count = 0
 
 
-def count_calls(method: Callable) -> Callable:
-    """ Decorator to know the number of calls """
-
-    @wraps(method)
-    def wrapper(url):
-        """ Wrapper decorator """
-        r.incr(f"count:{url}", 1)
-        cached_html = r.get(f"cached:{url}")
-        if cached_html:
-            return cached_html.decode('utf-8')
-
-        html = method(url)
-        r.setex(f"cached:{url}", 10, html)
-        return html
-
-    return wrapper
-
-
-@count_calls
 def get_page(url: str) -> str:
-    """ Get page
-    """
-    req = requests.get(url)
-    return req.text
+    """ get a page and cach value"""
+    rc.set(f"cached:{url}", count)
+    resp = requests.get(url)
+    rc.incr(f"count:{url}")
+    rc.setex(f"cached:{url}", 10, rc.get(f"cached:{url}"))
+    return resp.text
+
+
+if __name__ == "__main__":
+    get_page('http://slowwly.robertomurray.co.uk')
