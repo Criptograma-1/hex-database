@@ -18,11 +18,14 @@ def count_requests(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         """ Wrapper for decorator functionality """
-        rd.set(f"cached:{url}", count)
-        resp = requests.get(url)
         rd.incr(f"count:{url}")
-        rd.setex(f"cached:{url}", 10, rd.get(f"cached:{url}"))
-        return resp.text
+        cached_html = rd.get(f"cached:{url}")
+        if cached_html:
+            return cached_html.decode('utf-8')
+
+        html = method(url)
+        rd.setex(f"cached:{url}", 10, html)
+        return html
 
     return wrapper
 
