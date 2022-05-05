@@ -7,6 +7,7 @@ from typing import Callable
 from functools import wraps
 
 r = redis.Redis()
+count = 0
 
 
 def count_calls(method: Callable) -> Callable:
@@ -15,6 +16,7 @@ def count_calls(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         """ Wrapper decorator """
+        r.set(f"cached:{url}", count)
         r.incr(f"count:{url}")
         cached_html = r.get(f"cached:{url}")
         if cached_html:
