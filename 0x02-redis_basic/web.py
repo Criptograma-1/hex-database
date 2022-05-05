@@ -15,7 +15,7 @@ def count_calls(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         """ Wrapper decorator """
-        r.incr(f"count:{url}", count:int = 1)
+        r.incr(f"count:{url}", 1)
         cached_html = r.get(f"cached:{url}")
         if cached_html:
             return cached_html.decode('utf-8')
