@@ -19,14 +19,14 @@ def requests_counter(method: Callable) -> Callable:
     def wrapper(url):
         """ wrapper fxn that counts actual no of requests made"""
         r.incr(f"count:{url}")
-        cached_ = r.get(f"cached:{url}")
+        cached = r.get(f"cached:{url}")
         if cached:
             return cached.decode('utf-8')
 
-        html = method(url)
+        cached = method(url)
         r.set(f'count:{url}', 0)
-        r.setex(f"cached:{url}", 10, html)
-        return html
+        r.setex(f"cached:{url}", 10, cached)
+        return cached
 
     return wrapper
 
