@@ -8,7 +8,7 @@ import redis
 from functools import wraps
 
 
-def count_decorator(func: callable) -> callable:
+def count_decorator(method: callable) -> callable:
     """
     decorator to enable caching
     """
@@ -23,7 +23,7 @@ def count_decorator(func: callable) -> callable:
             cache.setex(key, 10, 1)
         else:
             cache.incr(key)
-        return func(url)
+        return method(url)
     return cache
 
 
