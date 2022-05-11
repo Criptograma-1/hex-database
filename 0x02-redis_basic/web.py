@@ -12,7 +12,7 @@ def count_decorator(func: callable) -> callable:
     """
     decorator to enable caching
     """
-    @wraps
+    @wraps(method)
     def cache(url):
         """
         wrapper function
