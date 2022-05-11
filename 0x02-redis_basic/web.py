@@ -1,36 +1,39 @@
 #!/usr/bin/env python3
+
 """
-sample use case of caching
+method that implements an expiring web cache and tracker
 """
 
-from requests import get
-import redis
+from typing import Callable
 from functools import wraps
+import redis
+import requests
 
 
-def count_decorator(method: callable) -> callable:
+def requests_counter(method: Callable) -> Callable:
+    """ Counts how many times a request has been made
     """
-    decorator to enable caching
-    """
+    r = redis.Redis()
+
     @wraps(method)
-    def cache(url):
-        """
-        wrapper function
-        """
-        cache = redis.Redis()
-        key = "count:{}".format(url)
-        if not cache.exists(key):
-            cache.setex(key, 10, 1)
-        else:
-            cache.incr(key)
-        return method(url)
-    return cache
+    def wrapper(url):
+        """ wrapper fxn that counts actual no of requests made"""
+        r.incr(f"count:{url}")
+        cached = r.get(f"cached:{url}")
+        if cached:
+            return cached.decode('utf-8')
+
+        cached = method(url)
+        r.set(f'count:{url}', 0)
+        r.setex(f"cached:{url}", 10, cached)
+        return cached
+
+    return wrapper
 
 
-@count_decorator
+@requests_counter
 def get_page(url: str) -> str:
+    """ obtains html content for a given site url and returns it.
     """
-    retrives the content of an html page, and also caches it
-    """
-    html = get(url)
-    return html.content
+    resp = requests.get(url)
+    return resp.text
