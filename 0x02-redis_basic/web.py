@@ -13,19 +13,19 @@ import requests
 def requests_counter(method: Callable) -> Callable:
     """ Counts how many times a request has been made
     """
-    r = redis.Redis()
+    rd = redis.Redis()
 
     @wraps(method)
     def wrapper(url):
         """ wrapper fxn that counts actual no of requests made"""
-        r.incr(f"count:{url}")
-        cached = r.get(f"cached:{url}")
+        rd.incr(f"count:{url}")
+        cached = rd.get(f"cached:{url}")
         if cached:
             return cached.decode('utf-8')
 
         cached = method(url)
-        r.set(f'count:{url}', 0)
-        r.setex(f"cached:{url}", 10, cached)
+        rd.set(f'count:{url}', 0)
+        rd.setex(f"cached:{url}", 10, cached)
         return cached
 
     return wrapper
