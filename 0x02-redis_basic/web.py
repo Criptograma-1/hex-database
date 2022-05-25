@@ -24,7 +24,6 @@ def requests_counter(method: Callable) -> Callable:
             return cached.decode('utf-8')
 
         cached = method(url)
-        rd.set(f'count:{url}', 0)
         rd.setex(f"cached:{url}", 10, cached)
         return cached
 
