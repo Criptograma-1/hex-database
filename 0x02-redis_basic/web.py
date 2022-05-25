@@ -10,7 +10,7 @@ import redis
 import requests
 
 
-def requests_counter(method):
+def requests_counter(method: Callable) -> Callable:
     """ Counts how many times a request has been made
     """
     r = redis.Redis()
