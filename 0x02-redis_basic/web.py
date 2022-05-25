@@ -21,7 +21,6 @@ def requests_counter(method):
         cacheKey = "cached:" + url
         countKey = "count:" + url
 
-        r.set(countKey, 1)
         r.incr(countKey)
         cached = r.get(cacheKey)
         if cached:
