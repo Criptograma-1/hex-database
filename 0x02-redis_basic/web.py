@@ -18,7 +18,7 @@ def requests_counter(method: Callable) -> Callable:
             return cached.decode('utf-8')
 
         html = method(url)
-        r.setex(f"cached:{url}", 10, html)
+        r.setex(f"cached:{url}", timedelta(seconds=10), html)
         return html
 
     return wrapper
