@@ -13,7 +13,7 @@ def requests_counter(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         r.incr(f"count:{url}")
-        cached_ = r.get(f"cached:{url}")
+        cached = r.get(f"cached:{url}")
         if cached:
             return cached.decode('utf-8')
 
@@ -23,7 +23,7 @@ def requests_counter(method: Callable) -> Callable:
 
     return wrapper
 
-
+@requests_counter
 def get_page(url: str) -> str:
     resp = requests.get(url)
     return resp.text
