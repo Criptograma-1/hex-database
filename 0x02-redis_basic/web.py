@@ -12,12 +12,12 @@ def requests_counter(method: Callable) -> Callable:
 
     @wraps(method)
     def wrapper(url):
-        r.incr(f"count:{url}")
         cached = r.get(f"cached:{url}")
         if cached:
             return cached.decode('utf-8')
 
         html = method(url)
+        r.incr(f"count:{url}")
         r.set(f"cached:{url}", html)
         r.expire(f"cached:{url}", timedelta(seconds=10))
         return html
