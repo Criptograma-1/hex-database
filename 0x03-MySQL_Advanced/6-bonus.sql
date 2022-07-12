@@ -1,4 +1,4 @@
---stored procedure AddBonus that adds a new correction for a student.
+-- stored procedure AddBonus that adds a new correction for a student.
 
 DELIMITER |
 CREATE PROCEDURE AddBonus (
